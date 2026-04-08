@@ -1,0 +1,5 @@
+temp_range,variable,coefficient,significant
+cold,wind_speed,-0.49,yes
+cold,humidity,0.01,no
+mid,humidity,0.05,yes
+mid,wind_speed,0.01,no
