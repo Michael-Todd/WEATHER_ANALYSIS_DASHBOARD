@@ -94,12 +94,12 @@ Regression analysis confirmed these findings:
 ---
 
 ## Tableau Dashboards
-![Temperature Trends][screenshots/temperature_trends_dashboard.png "Temperature Trends"]
-![Feels-Like Factors][screenshots/feels_like_dashboard.png "Feels-Like Factors"]
+![Temperature Trends](screenshots/temperature_trends_dashboard.png "Temperature Trends")
+![Feels-Like Factors](screenshots/feels_like_dashboard.png "Feels-Like Factors")
 
 ## Regression Results
-![Cold Regression][screenshots/regression_cold.png "Cold Regression"]
-![Mid Regression][screenshots/regression_mid.png "Mid Regression"]
+![Cold Regression](screenshots/regression_cold.png "Cold Regression")
+![Mid Regression](screenshots/regression_mid.png "Mid Regression")
 
 ---
 
