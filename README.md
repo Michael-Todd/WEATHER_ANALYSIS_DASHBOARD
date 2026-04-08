@@ -1,27 +1,107 @@
 # Weather Data Project
 
 ## Description
-This project was made to fetch, process, and analyze weather data using the OpenWeather API.
-It includes Python scripts that perform data collection, database management, and the utility functions that organize the weather data from OpenWeather.
-It includes Python scripts that perform data collection, transformation, database insertion,
-Python, OpenWeather API, pandas, MySQL, and Tableau are the tools used.
-OpenWeather -> Python -> MySQL -> pandas -> Tableau
+This project builds an end-to-end data pipeline that collects, stores, and analyzes weather data using the OpenWeather API.
+
+The pipeline integrates Python, MySQL, pandas, and Tableau to transform raw API data into structured insights.
+
+**Workflow:**  
+OpenWeather API → Python → MySQL → pandas → Tableau
+
+---
 
 ## Current Status
-Primary scripts are functional. Data points are continuing to be collected every day. Future updates may focus on:
-- Error handling
-- More database functionality
-- Improving data analysis features
-- Possibly traffic data (hence the naming of the project)
+- Data collection, cleaning, and analysis scripts are fully functional  
+- Data is collected daily at 12:00 PM  
+- Tableau dashboards are built for exploratory and statistical analysis  
 
-## Structure 
-- 'scripts/' -- contains the main scripts and utility functions
-- 'data/' -- contains CSV files that make up the data source for the Tableau portion of this project
-- 'requirements.txt' -- lists versions of relevant software in order to reproduce my venv
+**Planned improvements:**
+- Additional error handling  
+- Expanded database functionality  
+- Further analysis as dataset grows  
+- Regression analysis for hot temperature ranges once a sufficient number of data points are collected
+
+---
+
+## Project Structure
+- `scripts/` — data collection, transformation, analysis, and database logic  
+- `data/` — CSV files used as Tableau data sources  
+- `requirements.txt` — environment dependencies for reproducibility  
+
+---
 
 ## Design Decisions
-- Separation of concerns: I separated API handling, data transformation, and database logic, into separate scripts for clarity, scalability, and maintainability
-- Daily weather data pulls: I decided to pull weather data once a day at 12:00pm. This lends itself to extensions in the future if desired (for example, pulling data for the morning and evening as well)
-- Single table for all cities: My initial plan was to make one table per city, but I realized from a design standpoint that it'd be much more appropriate to store weather data within a single table. I came to this conclusion because each city stores the exact same set of data, so weather data is the entity at play here; also, opting for a single table prevented my Python code (main.py and database_utils.py) from becoming reptitive with multiple weather-pulling functions and insertion statements
-- Composite primary key: upon making the decision to use a single table for multiple cities, I realized that 'date' would no longer be a suitable primary key (multiple rows would contain the same date because more than one city is being pulled). In order to uniquely identify any row, I needed the value of both the 'city' and the 'date' columns
-- Rerun capabilities via 'ON DUPLICATE KEY UPDATE' clause: this was added for the event in which I accidentally run main.py too early in the day and hence need to safely rerun the code
+
+- **Separation of concerns:**  
+  API handling, transformation, analysis, and database logic are separated into distinct files for clarity and scalability  
+
+- **Daily data collection:**  
+  Data is collected once per day at a consistent time to ensure comparability across all observations  
+
+- **Single-table schema:**  
+  Weather data for all cities is stored in a single table, since each record shares the same structure  
+
+- **Composite primary key (`city`, `date`):**  
+  Ensures uniqueness across multiple cities with overlapping dates  
+
+- **Safe reruns with `ON DUPLICATE KEY UPDATE`:**  
+  Allows scripts to be rerun without introducing duplicate data  
+
+- **Segmenting analysis based on temperature range**
+  Initially, both temperature trends and feels-like analysis were separated by city; I decided it would be more valuable to analyze feels-like factors based on temperature ranges (cold, mid, hot), so as to prevent dampening the effects of wind/humidity in the non-segmented version
+
+---
+
+## Analysis Approach
+
+Python + pandas were used to create dataframes and CSVs for analysis; these CSVs have all been imported into Tableau.
+
+For feels-like factors, initial exploratory analysis was performed in Tableau using scatterplots and correlation to identify potential relationships.
+
+To quantify these relationships more rigorously, a **multiple linear regression model** was ran in Python via `statsmodels`.
+
+The model:
+
+`temperature_difference ~ humidity + wind_speed`
+
+Where:
+- `temperature_difference = feels_like_temperature - actual_temperature`
+
+Multiple regression was chosen to isolate the independent effects of humidity and wind speed while controlling for potential overlap between them.
+
+---
+
+## Key Findings
+
+Analysis revealed that the drivers of perceived temperature vary greatly by temperature range:
+
+- **Cold temperatures (<50°F):**  
+  Wind speed is the dominant factor, with a strong negative relationship *(r ≈ -0.84)*  
+  Higher wind speed is strongly associated with decreased perceived temperatures 
+
+- **Mid-range temperatures (50–79°F):**  
+  Humidity is the dominant factor, with a strong positive relationship *(r ≈ 0.73)*  
+  Higher humidity is associated with higher perceived temperature  
+
+- **Hot temperatures (80°F+):**  
+  Insufficient data to glean reliable conclusions  
+
+Regression analysis confirmed these findings:
+- Wind speed is statistically significant in cold conditions  
+- Humidity is statistically significant in mid-range conditions  
+- Other relationships were not statistically significant  
+
+---
+
+## Tableau Dashboards
+
+
+## Regression Results
+
+
+## Future Improvements
+
+- Expand dataset to strengthen statistical reliability  
+- Perform regression analysis for hot temperature range  
+- Explore additional variables (e.g., sunlight, cloud cover)  
+- Increase data collection frequency (morning vs evening comparisons)
