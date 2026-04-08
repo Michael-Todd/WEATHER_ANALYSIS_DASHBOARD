@@ -13,13 +13,13 @@ OpenWeather API → Python → MySQL → pandas → Tableau
 ## Current Status
 - Data collection, cleaning, and analysis scripts are fully functional  
 - Data is collected daily at 12:00 PM  
-- Tableau dashboards are built for exploratory and statistical analysis  
 
 ---
 
 ## Project Structure
 - `scripts/` — data collection, transformation, analysis, and database logic  
-- `data/` — CSV files used as Tableau data sources  
+- `data/` — CSV files used as Tableau data sources
+- `screenshots` - screenshots of Tableau dashboards and regression output
 - `requirements.txt` — environment dependencies for reproducibility  
 
 ---
